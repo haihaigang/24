@@ -1,0 +1,137 @@
+<html>
+<script>
+function FourNumber() {
+    this.i1 = 0;
+    this.i2 = 1;
+    this.i3 = 2;
+    this.i4 = 3;
+
+    this.max = 4;
+    this.opt = ['+', '-', '*', '/'];
+    this.four = [1, 2, 7, 7];
+
+    this.result = {};
+}
+
+FourNumber.prototype.setFour = function(four){
+	if(!four || this.four.length != 4){
+		console.info('error param, four')
+		return;
+	}
+	this.four = four;
+	this.i1 = 0;
+    this.i2 = 1;
+    this.i3 = 2;
+    this.i4 = 3;
+	this.result = {};
+}
+
+FourNumber.prototype.isOk = function() {
+    return this.i1 != this.i2 && this.i1 != this.i3 && this.i1 != this.i4 && this.i2 != this.i3 && this.i2 != this.i4 && this.i3 != this.i4
+}
+
+FourNumber.prototype.add = function() {
+    this.i4++;
+    if (this.i4 >= this.max) {
+        this.i4 = 0;
+        this.i3++;
+
+        if (this.i3 >= this.max) {
+            this.i3 = 0;
+            this.i2++;
+
+            if (this.i2 >= this.max) {
+                this.i2 = 0;
+                this.i1++;
+
+                if (this.i1 >= this.max) {
+                    throw ('max');
+                }
+            }
+        }
+
+    }
+}
+
+FourNumber.prototype.toString = function() {
+    return this.i1.toString() + this.i2.toString() + this.i3.toString() + this.i4.toString();
+}
+
+FourNumber.prototype.toArray = function() {
+    return [this.i1, this.i2, this.i3, this.i4];
+}
+
+FourNumber.prototype.toNumberArray = function() {
+    return [this.four[this.i1], this.four[this.i2], this.four[this.i3], this.four[this.i4]];
+}
+
+FourNumber.prototype.toOperateArray = function() {
+    return [this.opt[this.i1], this.opt[this.i2], this.opt[this.i3], this.opt[this.i4]];
+}
+
+FourNumber.prototype.calc = function() {
+    if (!this.four || this.four.length == 0) {
+        console.error('four error');
+        return;
+    }
+
+    var temp = [];
+    var temp2 = [];
+
+    while (true) {
+        try {
+            if (this.isOk()) {
+                temp.push(this.toNumberArray());
+            }
+            temp2.push(this.toOperateArray());
+            this.add();
+        } catch (e) {
+            break;
+        }
+    }
+
+    for (var i in temp) {
+        for (var j in temp2) {
+            var n = temp[i];
+            var m = temp2[j];
+
+            var str = '(((';
+            for (var k = 0; k < n.length; k++) {
+                if (k == 0) {
+                    str += n[k];
+                } else {
+                    str += m[k - 1] + n[k] + ')';
+                }
+            }
+            // console.log(str)
+
+            this.result[str] = eval(str);
+        }
+    }
+}
+
+FourNumber.prototype.printAll = function() {
+    this.print(true);
+}
+
+FourNumber.prototype.print = function(isAll) {
+    this.calc();
+
+    var html = [];
+    for (var i in this.result) {
+        if (isAll || Math.abs(this.result[i]) == 24) {
+            html.push(i + '=' + this.result[i] + '<br/>');
+        }
+    }
+
+    document.write(html.join('<br/>'))
+};
+FourNumber.prototype.quick = function(four, isAll) {
+	this.setFour(four);
+	this.print(isAll);
+}
+
+var step = new FourNumber();
+</script>
+
+</html>
